@@ -1,0 +1,5 @@
+#!/bin/sh -e
+
+sv start dockergen || exit 1
+
+exec /usr/local/bin/frpc -c /etc/frpc.ini 2>&1
