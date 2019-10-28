@@ -15,11 +15,13 @@ log_max_days = {{ when (not .Env.FRPC_LOG_DAYS) "5" .Env.FRPC_LOG_DAYS }}
 
 token =  {{ when (not .Env.FRPC_AUTH_TOKEN) "abcdefghi" .Env.FRPC_AUTH_TOKEN }}
 
+{{if and .Env.FRPC_ADMIN_USER .Env.FRPC_ADMIN_PWD }}
 # set admin address for control frpc's action by http api such as reload (we do not expose this port)
-admin_addr = 127.0.0.1
-admin_port = 7400
-admin_user = admin
-admin_pwd = admin
+admin_addr = {{ when (not .Env.FRPC_ADMIN_ADDRESS) "127.0.0.1" .Env.FRPC_ADMIN_ADDRESS }}
+admin_port = {{ when (not .Env.FRPC_ADMIN_PORT) "7400" .Env.FRPC_ADMIN_PORT }}
+admin_user = {{ .Env.FRPC_ADMIN_USER }}
+admin_pwd = {{ .Env.FRPC_ADMIN_PWD }}
+{{end}}
 
 # connections will be established in advance, default value is zero
 pool_count = {{ when (not .Env.FRPC_POOL_COUNT) "5" .Env.FRPC_POOL_COUNT }}
