@@ -2,4 +2,9 @@
 
 sv start dockergen || exit 1
 
-exec /usr/local/bin/frpc -c /etc/frpc.ini 2>&1
+# if valid ADMIN user and passwd is set also reload the server
+if [ -z ${FRPC_ADMIN_USER}] || [-z ${FRPC_ADMIN_PWD}]; then
+  exec /usr/local/bin/frpc -c /etc/frpc.ini 2>&1
+else
+  exec /usr/local/bin/frpc reload -c /etc/frpc.ini 2>&1
+fi
