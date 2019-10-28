@@ -53,6 +53,8 @@ tls_enable = true
 {{ $rewrite := index $container.Labels (printf "frp.%s.http.rewrite" $address.Port) }}
 {{ $httpuser := index $container.Labels ( printf "frp.%s.http.username" $address.Port) }}
 {{ $httppwd := index $container.Labels ( printf "frp.%s.http.password" $address.Port) }}
+{{ $healthcheck := index $container.Labels ( printf "frp.%s.health_check" $address.Port) }}
+{{ $healthcheck := when ( or (or (eq $healthcheck "") (eq $healthcheck "true" )) (or (eq $healthcheck "True" ) (eq $healthcheck "1" )) )  true false }}
 
 {{ if $service_type }}
 
@@ -62,9 +64,11 @@ type = {{ $service_type }}
 local_ip = {{ $network.IP }}
 local_port = {{ $address.Port }}
 
+{{ if $healthcheck }}
 health_check_type = {{ $service_type }}
 health_check_timeout_s = 3
 health_check_interval_s = 60
+{{ end }}
 
 {{ if eq $service_type "http" }}
 
