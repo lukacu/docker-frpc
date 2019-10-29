@@ -13,6 +13,10 @@ Environment configuration:
  * `FRPC_LOGFILE` - where to log status (log disabled if not set)
  * `FRPC_LOG_LEVEL` - level of logging, defaults to "warn"
  * `FRPC_LOG_DAYS` - log for how many days, defaults to 5 days
+ * `FRPC_ADMIN_ADDRESS` - (optional) admin server address, defaults to 127.0.0.1
+ * `FRPC_ADMIN_PORT` - (optional) admin server port, defaults to 7400
+ * `FRPC_ADMIN_USER` - (optional) admin server user credentials, if not set admin access is not established
+ * `FRPC_ADMIN_PWD` - (optional) admin server password credentials, if not set admin access is not established
 
 The container should be configured to have a read-only connection to the Docker process socket. It listens for changes in
 other containers and will reconfigure the FRP client if changes occur.
@@ -25,3 +29,6 @@ The `fpr.<port>` label should be set to either "tcp" or "http" to indicate the t
  * `fpr.<port>.http.rewrite` - rewrite Host when sending request to the proxied server
  * `fpr.<port>.http.username` - username for Basic HTTP authentication
  * `fpr.<port>.http.password` - password for Basic HTTP authentication
+
+Additionally, health check on ports can be disabled using:
+ * `frp.<port>.health_check=false` - disables port health check if no service is present at the port during the docker startup
