@@ -48,6 +48,7 @@ tls_enable = true
 {{ range $address := $container.Addresses }}
 
 {{ $service_type := index $container.Labels (printf "frp.%s" $address.Port) }}
+{{ $secret_key := index $container.Labels (printf "frp.%s.secret" $address.Port) }}
 {{ $subdomain := index $container.Labels (printf "frp.%s.http.subdomain" $address.Port) }}
 {{ $domains := index $container.Labels (printf "frp.%s.http.domains" $address.Port) }}
 {{ $rewrite := index $container.Labels (printf "frp.%s.http.rewrite" $address.Port) }}
@@ -92,8 +93,13 @@ host_header_rewrite = {{ $rewrite }}
 health_check_url = /
 
 {{ else }}
+{{ if eq $service_type "stcp" }}
+sk = {{ $secret_key }}
+
+{{ else }}
 # Allocate random free port
 remote_port = 0
+{{ end }}
 {{ end }}
 
 {{ end }}

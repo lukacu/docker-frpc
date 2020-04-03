@@ -1,6 +1,6 @@
 FROM golang:alpine AS build
 
-ENV FRP_VERSION 0.32.0
+ENV FRP_VERSION 0.32.1
 ENV DOCKER_GEN_VERSION 0.7.4
 
 RUN apk add --no-cache git make gcc linux-headers libc-dev
