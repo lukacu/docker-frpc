@@ -22,19 +22,19 @@ The container should be configured to have a read-only connection to the Docker 
 other containers and will reconfigure the FRP client if changes occur.
 
 The container will detect containers that have the label `frp.enabled` set to "true". It will then scan through their published ports and look for ports that are configured using labels.
-The `fpr.<port>` label should be set to "tcp", "http" or "stcp" to indicate the type of connection.
+The `frp.<port>` label should be set to "tcp", "http" or "stcp" to indicate the type of connection.
 
 For HTTP connections the follwing configuration can be set:
 
- * `fpr.<port>.http.subdomain` - a subdomain to use (the super-domain is set in FRP server configuration)
- * `fpr.<port>.http.domains` - custom domains to use, comma separated
- * `fpr.<port>.http.rewrite` - rewrite Host when sending request to the proxied server
- * `fpr.<port>.http.username` - username for Basic HTTP authentication
- * `fpr.<port>.http.password` - password for Basic HTTP authentication
+ * `frp.<port>.http.subdomain` - a subdomain to use (the super-domain is set in FRP server configuration)
+ * `frp.<port>.http.domains` - custom domains to use, comma separated
+ * `frp.<port>.http.rewrite` - rewrite Host when sending request to the proxied server
+ * `frp.<port>.http.username` - username for Basic HTTP authentication
+ * `frp.<port>.http.password` - password for Basic HTTP authentication
 
 For STCP (secret TCP) connections, the following configuration must be set:
 
- * `fpr.<port>.secret` - sets the pre-shared secred key required for connecting another client to the service.
+ * `frp.<port>.secret` - sets the pre-shared secred key required for connecting another client to the service.
 
 Additionally, health check on ports can be disabled using:
 
