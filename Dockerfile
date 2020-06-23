@@ -1,6 +1,6 @@
 FROM golang:alpine AS build
 
-ENV FRP_VERSION 0.32.1
+ENV FRP_VERSION 0.33.0
 ENV DOCKER_GEN_VERSION 0.7.4
 
 RUN apk add --no-cache git make gcc linux-headers libc-dev
@@ -24,6 +24,10 @@ COPY --from=build /go/src/github.com/jwilder/docker-gen/docker-gen /usr/local/bi
 
 COPY start_runit /sbin/
 COPY etc /etc/
+
+# Set admin user and pws so that config reload can be triggered. The admin port is not exposed by default.
+ENV FRPC_ADMIN_USER admin
+ENV FRPC_ADMIN_PWD admin
 
 CMD ["/sbin/start_runit"]
 
