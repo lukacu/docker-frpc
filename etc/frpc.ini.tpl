@@ -36,7 +36,6 @@ tls_enable = true
 {{ $work_network := when (not .Env.FRPC_NETWORK) "default" .Env.FRPC_NETWORK }}
 
 {{ range $container := whereLabelValueMatches $ "frp.enabled" "true" }}
-
 {{ if $container.Networks }}
 {{ $network := first (where $container.Networks "Name" $work_network ) }}
 
@@ -46,8 +45,9 @@ tls_enable = true
 {{ $id := $container.ID }}
 
 {{ range $address := $container.Addresses }}
-
 {{ $service_type := index $container.Labels (printf "frp.%s" $address.Port) }}
+{{ $secret_key := index $container.Labels (printf "frp.%s.secret" $address.Port) }}
+{{ $encryption := index $container.Labels (printf "frp.%s.encryption" $address.Port) }}
 {{ $subdomain := index $container.Labels (printf "frp.%s.http.subdomain" $address.Port) }}
 {{ $domains := index $container.Labels (printf "frp.%s.http.domains" $address.Port) }}
 {{ $rewrite := index $container.Labels (printf "frp.%s.http.rewrite" $address.Port) }}
@@ -63,6 +63,10 @@ tls_enable = true
 type = {{ $service_type }}
 local_ip = {{ $network.IP }}
 local_port = {{ $address.Port }}
+
+{{ if $encryption }}
+use_encryption = true
+{{ end }}
 
 {{ if $healthcheck }}
 health_check_type = {{ $service_type }}
@@ -92,8 +96,13 @@ host_header_rewrite = {{ $rewrite }}
 health_check_url = /
 
 {{ else }}
+{{ if eq $service_type "stcp" }}
+sk = {{ $secret_key }}
+
+{{ else }}
 # Allocate random free port
 remote_port = 0
+{{ end }}
 {{ end }}
 
 {{ end }}
