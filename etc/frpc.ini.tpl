@@ -50,12 +50,12 @@ tls_enable = true
 {{ $encryption := index $container.Labels (printf "frp.%s.encryption" $address.Port) }}
 {{ $subdomain := index $container.Labels (printf "frp.%s.http.subdomain" $address.Port) }}
 {{ $domains := index $container.Labels (printf "frp.%s.http.domains" $address.Port) }}
+{{ $locations := index $container.Labels ( printf "frp.%s.http.locations" $address.Port) }}
 {{ $rewrite := index $container.Labels (printf "frp.%s.http.rewrite" $address.Port) }}
 {{ $httpuser := index $container.Labels ( printf "frp.%s.http.username" $address.Port) }}
 {{ $httppwd := index $container.Labels ( printf "frp.%s.http.password" $address.Port) }}
 {{ $healthcheck := index $container.Labels ( printf "frp.%s.health_check" $address.Port) }}
 {{ $healthcheck := when ( or (or (eq $healthcheck "") (eq $healthcheck "true" )) (or (eq $healthcheck "True" ) (eq $healthcheck "1" )) )  true false }}
-
 {{ if $service_type }}
 
 [{{ print $prefix "_" $name "_" $address.Port }}]
@@ -87,6 +87,10 @@ subdomain = {{ $subdomain }}
 
 {{ if $domains }}
 custom_domains = {{ $domains }}
+{{ end }}
+
+{{ if $locations }}
+locations = {{ $locations }}
 {{ end }}
 
 {{ if $rewrite }}

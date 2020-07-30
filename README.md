@@ -28,6 +28,7 @@ For HTTP connections the follwing configuration can be set:
 
  * `frp.<port>.http.subdomain` - a subdomain to use (the super-domain is set in FRP server configuration)
  * `frp.<port>.http.domains` - custom domains to use, comma separated
+ * `frp.<port>.http.locations` - locations to use, comma separated
  * `frp.<port>.http.rewrite` - rewrite Host when sending request to the proxied server
  * `frp.<port>.http.username` - username for Basic HTTP authentication
  * `frp.<port>.http.password` - password for Basic HTTP authentication
