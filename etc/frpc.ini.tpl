@@ -45,10 +45,6 @@ tls_enable = true
 {{ $id := $container.ID }}
 {{ $notify_email := index $container.Labels (printf "frp.notify_email") }} 
 
-{{ if  $notify_email }}
-{{ $frpc_prefix := (print $notify_email "##" $frpc_prefix) }}
-{{ end }}
-
 {{ range $address := $container.Addresses }}
 {{ $service_type := index $container.Labels (printf "frp.%s" $address.Port) }}
 {{ $secret_key := index $container.Labels (printf "frp.%s.secret" $address.Port) }}
@@ -63,11 +59,7 @@ tls_enable = true
 {{ $healthcheck := when ( or (or (eq $healthcheck "") (eq $healthcheck "true" )) (or (eq $healthcheck "True" ) (eq $healthcheck "1" )) )  true false }}
 {{ if $service_type }}
 
-[{{ print $frpc_prefix "##" $name "##" $address.Port }}]
-
-{{ if  $notify_email }}
-meta_notify_email = {{ $notify_email }}
-{{ end }}
+[{{ print $frpc_prefix "_" $name "_" $address.Port }}]
 
 type = {{ $service_type }}
 local_ip = {{ $network.IP }}
@@ -116,6 +108,12 @@ sk = {{ $secret_key }}
 # Allocate random free port
 remote_port = 0
 {{ end }}
+
+meta_frpc_prefix = {{ $frpc_prefix }}
+{{ if  $notify_email }}
+meta_notify_email = {{ $notify_email }}
+{{ end }}
+
 {{ end }}
 
 {{ end }}
