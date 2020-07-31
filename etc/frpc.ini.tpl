@@ -110,6 +110,7 @@ remote_port = 0
 {{ end }}
 
 meta_frpc_prefix = {{ $frpc_prefix }}
+meta_local_port = {{ $local_port }}
 {{ if  $notify_email }}
 meta_notify_email = {{ $notify_email }}
 {{ end }}
