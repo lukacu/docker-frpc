@@ -108,7 +108,10 @@ sk = {{ $secret_key }}
 # Allocate random free port
 remote_port = 0
 {{ end }}
+{{ end }}
 
+{{ if $notify_email }}
+# Provide metadata for notifier plugin
 meta_frpc_prefix = {{ $frpc_prefix }}
 meta_local_port = {{ $address.Port }}
 {{ if  $notify_email }}
