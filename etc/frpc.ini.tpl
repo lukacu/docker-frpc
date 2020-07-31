@@ -31,7 +31,7 @@ login_fail_exit = false
 
 tls_enable = true
 
-{{ $prefix := when (not .Env.FRPC_PREFIX) "frp" .Env.FRPC_PREFIX }}
+{{ $frpc_prefix := when (not .Env.FRPC_PREFIX) "frp" .Env.FRPC_PREFIX }}
 
 {{ $work_network := when (not .Env.FRPC_NETWORK) "default" .Env.FRPC_NETWORK }}
 
@@ -43,6 +43,11 @@ tls_enable = true
 
 {{ $name := $container.Name }}
 {{ $id := $container.ID }}
+{{ $notify_email := index $container.Labels (printf "frp.notify_email") }} 
+
+{{ if  $notify_email }}
+{{ $frpc_prefix := (print $notify_email "##" $frpc_prefix) }}
+{{ end }}
 
 {{ range $address := $container.Addresses }}
 {{ $service_type := index $container.Labels (printf "frp.%s" $address.Port) }}
@@ -58,7 +63,11 @@ tls_enable = true
 {{ $healthcheck := when ( or (or (eq $healthcheck "") (eq $healthcheck "true" )) (or (eq $healthcheck "True" ) (eq $healthcheck "1" )) )  true false }}
 {{ if $service_type }}
 
-[{{ print $prefix "_" $name "_" $address.Port }}]
+[{{ print $frpc_prefix "##" $name "##" $address.Port }}]
+
+{{ if  $notify_email }}
+meta_notify_email = {{ $notify_email }}
+{{ end }}
 
 type = {{ $service_type }}
 local_ip = {{ $network.IP }}
