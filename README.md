@@ -40,3 +40,7 @@ For STCP (secret TCP) connections, the following configuration must be set:
 Additionally, health check on ports can be disabled using:
 
  * `frp.<port>.health_check=false` - disables port health check if no service is present at the port during the docker startup
+
+Optionally, email notification of the assigned ports can be actived (using LinkNotification plugin on FRP server) by setting:
+
+* `frp.notify_email` - set to email that will recieve notification of the assigned ports
