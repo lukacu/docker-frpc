@@ -28,6 +28,7 @@ For HTTP connections the follwing configuration can be set:
 
  * `frp.<port>.http.subdomain` - a subdomain to use (the super-domain is set in FRP server configuration)
  * `frp.<port>.http.domains` - custom domains to use, comma separated
+ * `frp.<port>.http.locations` - locations to use, comma separated
  * `frp.<port>.http.rewrite` - rewrite Host when sending request to the proxied server
  * `frp.<port>.http.username` - username for Basic HTTP authentication
  * `frp.<port>.http.password` - password for Basic HTTP authentication
@@ -39,3 +40,7 @@ For STCP (secret TCP) connections, the following configuration must be set:
 Additionally, health check on ports can be disabled using:
 
  * `frp.<port>.health_check=false` - disables port health check if no service is present at the port during the docker startup
+
+Optionally, email notification of the assigned ports can be actived (using LinkNotification plugin on FRP server) by setting:
+
+* `frp.notify_email` - set to email that will recieve notification of the assigned ports

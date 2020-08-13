@@ -31,7 +31,7 @@ login_fail_exit = false
 
 tls_enable = true
 
-{{ $prefix := when (not .Env.FRPC_PREFIX) "frp" .Env.FRPC_PREFIX }}
+{{ $frpc_prefix := when (not .Env.FRPC_PREFIX) "frp" .Env.FRPC_PREFIX }}
 
 {{ $work_network := when (not .Env.FRPC_NETWORK) "default" .Env.FRPC_NETWORK }}
 
@@ -43,6 +43,7 @@ tls_enable = true
 
 {{ $name := $container.Name }}
 {{ $id := $container.ID }}
+{{ $notify_email := index $container.Labels (printf "frp.notify_email") }} 
 
 {{ range $address := $container.Addresses }}
 {{ $service_type := index $container.Labels (printf "frp.%s" $address.Port) }}
@@ -50,15 +51,15 @@ tls_enable = true
 {{ $encryption := index $container.Labels (printf "frp.%s.encryption" $address.Port) }}
 {{ $subdomain := index $container.Labels (printf "frp.%s.http.subdomain" $address.Port) }}
 {{ $domains := index $container.Labels (printf "frp.%s.http.domains" $address.Port) }}
+{{ $locations := index $container.Labels ( printf "frp.%s.http.locations" $address.Port) }}
 {{ $rewrite := index $container.Labels (printf "frp.%s.http.rewrite" $address.Port) }}
 {{ $httpuser := index $container.Labels ( printf "frp.%s.http.username" $address.Port) }}
 {{ $httppwd := index $container.Labels ( printf "frp.%s.http.password" $address.Port) }}
 {{ $healthcheck := index $container.Labels ( printf "frp.%s.health_check" $address.Port) }}
 {{ $healthcheck := when ( or (or (eq $healthcheck "") (eq $healthcheck "true" )) (or (eq $healthcheck "True" ) (eq $healthcheck "1" )) )  true false }}
-
 {{ if $service_type }}
 
-[{{ print $prefix "_" $name "_" $address.Port }}]
+[{{ print $frpc_prefix "_" $name "_" $address.Port }}]
 
 type = {{ $service_type }}
 local_ip = {{ $network.IP }}
@@ -89,6 +90,10 @@ subdomain = {{ $subdomain }}
 custom_domains = {{ $domains }}
 {{ end }}
 
+{{ if $locations }}
+locations = {{ $locations }}
+{{ end }}
+
 {{ if $rewrite }}
 host_header_rewrite = {{ $rewrite }}
 {{ end }}
@@ -103,6 +108,16 @@ sk = {{ $secret_key }}
 # Allocate random free port
 remote_port = 0
 {{ end }}
+{{ end }}
+
+{{ if $notify_email }}
+# Provide metadata for notifier plugin
+meta_frpc_prefix = {{ $frpc_prefix }}
+meta_local_port = {{ $address.Port }}
+{{ if  $notify_email }}
+meta_notify_email = {{ $notify_email }}
+{{ end }}
+
 {{ end }}
 
 {{ end }}
